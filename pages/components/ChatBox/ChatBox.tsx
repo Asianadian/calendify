@@ -8,10 +8,30 @@ export function ChatBox() {
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState("");
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = async (e: any) => {
     if (e.key === "Enter" && input.trim() !== "") {
       setMessages([...messages, input]);
       setInput("");
+
+      try {
+        const response = await fetch("http://localhost:5000/api/python", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ prompt: "I have a dinner at 7 on december 13th 2024" }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+        } else {
+          console.log("no res")
+        }
+      } 
+      catch (error) {
+        console.log("error")
+      }
     }
   };
 

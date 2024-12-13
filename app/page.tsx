@@ -9,6 +9,7 @@ export default function Home() {
       <div className="content">
         <ChatBox />
         <Calendar />
+        <a href="/api/python">rastarsta</a>
       </div>
     </div>
   );
