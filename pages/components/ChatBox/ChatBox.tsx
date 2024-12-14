@@ -7,10 +7,12 @@ import styles from './ChatBox.module.css'
 export function ChatBox() {
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState("");
+  const [events, setEvents] = useState<any[]>([]);
 
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter" && input.trim() !== "") {
       setMessages([...messages, input]);
+      const a = input
       setInput("");
 
       try {
@@ -19,18 +21,21 @@ export function ChatBox() {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ prompt: "I have a dinner at 7 on december 13th 2024" }),
+          body: JSON.stringify({ prompt: a }),
         });
 
         if (response.ok) {
-          const data = await response.json();
-          console.log(data)
+          const data: any[] = await response.json();
+
+          data.forEach(event => {
+            setEvents([...events, event])
+          });
         } else {
           console.log("no res")
         }
       } 
       catch (error) {
-        console.log("error")
+        console.log(error)
       }
     }
   };

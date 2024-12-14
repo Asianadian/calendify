@@ -44,8 +44,10 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route("/api/python", methods=['POST'])
-def hello_world():
+def create_events_from_prompt():
     openai.api_key = OPENAI_API_KEY
+
+    added_events = []
     
     try:
         data = request.get_json()
@@ -78,21 +80,19 @@ def hello_world():
                 'description': event.description,
                 'location': event.location,
                 'start': {
-                    'dateTime': event.begin.isoformat(),  # Google Calendar API expects ISO 8601 format
-                    #'timeZone': 'EST'
+                    'dateTime': event.begin.isoformat(),
                 },
                 'end': {
                     'dateTime': event.end.isoformat(),
-                    #'timeZone': 'EST'
                 },
             }
 
-            post_event(google_event)
+            added_events.append(post_event(google_event))
 
     except Exception as e:
         return {"error": f"Invalid ICS data: {str(e)}"}
     
-    return Response("", status=200)
+    return jsonify(added_events)
 
 def post_event(event):
     print('event', event)
@@ -103,8 +103,53 @@ def post_event(event):
             calendarId=calendar_id,
             body=event
         ).execute()
+
         print(f"Event created: {created_event['summary']}")
+
+        shortened_event = {
+           'id': created_event['id'],
+           'summary': created_event['summary'],
+           'description': created_event['description'] if 'description' in created_event else '',
+           'start': created_event['start'],
+           'end': created_event['end']
+        }
+
+        return shortened_event
+    
     except Exception as e:
         print(f"An error occurred: {e}")
 
+@app.route("/api/python", methods=['DELETE'])
+def delete_event_from_prompt():
+    openai.api_key = OPENAI_API_KEY
+    
+    try:
+        data = request.get_json()
+        prompt = data['prompt']
+        events = data['events']
+
+        today = datetime.now()
+
+        formatted_date = today.strftime("%A, %B %d, %Y")
+
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": f"You are an assistant that determines if a description matches anything in the prompt. You only respond with the ICS output. Today is {formatted_date}. Respond in EST time."},
+                {"role": "user", "content": f"Generate an ICS event for this request: {prompt}"}
+            ]
+        )
+        ics_data = response.choices[0].message.content
+        print(ics_data)
+
+    except Exception as e:
+        return {"error": f"Failed to get ICS data from OpenAI: {str(e)}"}
+    
+    try:
+        ...
+
+    except Exception as e:
+        return {"error": f"Invalid ICS data: {str(e)}"}
+    
+    return jsonify(events)
 app.run(debug=True)
