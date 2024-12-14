@@ -12,16 +12,16 @@ export function ChatBox() {
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter" && input.trim() !== "") {
       setMessages([...messages, input]);
-      const a = input
+      const prompt = input;
       setInput("");
 
       try {
-        const response = await fetch("http://localhost:5000/api/python", {
+        const response = await fetch("http://localhost:5000/api/langchain", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ prompt: a }),
+          body: JSON.stringify({ prompt: prompt, events: events}),
         });
 
         if (response.ok) {
