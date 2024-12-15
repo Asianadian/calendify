@@ -4,13 +4,14 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 import os
+import json
 
-SCOPES = ["https://www.googleapis.com/auth/calendar.events", "https://www.googleapis.com/auth/calendar"]
+SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 def shorten_event(event):
   shortened_event = {
         'id': event['id'],
-        'summary': event['summary'],
+        'summary': event['summary'] if 'summary' in event else '',
         'description': event['description'] if 'description' in event else '',
         'start': event['start'],
         'end': event['end']
@@ -23,7 +24,7 @@ class GoogleCalendar:
     self.creds = None
     self.authenticate()
     self.service = build('calendar', 'v3', credentials=self.creds)
-    self.calendar_id = 'primary'
+    self.calendar_id = '4039edbbb48bad7cdbf3cc3ed8c746ba23edffb96f655ea948b6cd6f88a1e97b@group.calendar.google.com'
     
   def authenticate(self):
     if os.path.exists("token.json"):
@@ -48,7 +49,7 @@ class GoogleCalendar:
 
       print(f"Event created: {created_event['summary']}")
 
-      shortened_event = shortened_event(created_event)
+      shortened_event = shorten_event(created_event)
 
       return shortened_event
     
@@ -78,7 +79,7 @@ class GoogleCalendar:
       return created_events
 
     except Exception as e:
-      print(f"Exception occured while parsing events: {e}")
+      print(f"Exception occured while creating events: {e}")
     
   def get_events(self):
     try:
@@ -95,11 +96,35 @@ class GoogleCalendar:
           shortened_event = shorten_event(event)
           events.append(shortened_event)
 
-        page_token = events.get('nextPageToken')
+        page_token = page_events.get('nextPageToken')
         if not page_token:
           break
 
       return events
     
     except Exception as e:
-      print(f"Exception occured while creating event: {e}")
+      print(f"Exception occured while getting events: {e}")
+
+  def delete_event(self, event_id):
+    try:
+      self.service.events().delete(
+        calendarId=self.calendar_id,
+        eventId=event_id
+      ).execute()
+    
+    except Exception as e:
+      print(f"Exception occured while deleting event: {e}")
+
+  def delete_events(self, event_ids):
+    try:
+      deleted_events = []
+
+      event_ids = json.loads(event_ids)['event_ids']
+
+      for event_id in event_ids:
+        self.delete_event(event_id)
+
+      return deleted_events
+
+    except Exception as e:
+      print(f"Exception occured while deleting events: {e}")

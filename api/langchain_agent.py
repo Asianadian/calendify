@@ -14,15 +14,18 @@ llm = LLM(OPENAI_API_KEY)
 google_calendar = GoogleCalendar()
 
 def create_events(prompt):
+  print()
   ics_data = llm.create_event_prompt(prompt)
   added_events = google_calendar.create_events(ics_data)
-  print(added_events)
   return added_events
   ...
 
 def delete_events(prompt):
+  print()
   events = google_calendar.get_events()
-  
+  event_ids_to_delete = llm.delete_event_prompt(prompt, events)
+  deleted_events = google_calendar.delete_events(event_ids_to_delete)
+  return deleted_events
   ...
 
 create_event_tool = Tool(
@@ -46,7 +49,6 @@ class LangChainAgent:
     os.environ["OPENAI_API_KEY"] = api_key
     self.llm = ChatOpenAI(temperature=0.1)
     self.agent = initialize_agent(tools, self.llm, agent="zero-shot-react-description", verbose=True)
-    self.agent.run = self.agent.run()
 
   def run(self, prompt):
     a = self.agent.run(prompt)
