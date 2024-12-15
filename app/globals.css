@@ -15,6 +15,7 @@
 body {
   margin: 0;
   height: 100vh;
+  font-family: "Google Sans Text","Google Sans",Helvetica,Arial,sans-serif;
 }
 
 ::-webkit-scrollbar {
