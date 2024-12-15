@@ -19,7 +19,7 @@
 }
 
 .chatInput {
-  border: 0px none;
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 1rem;
   width: 100%;
   max-width: 300px;
@@ -32,7 +32,7 @@
 }
 
 .chatInput:focus {
-  outline: none;
+  border: 1px solid white;
 }
 
 .chatInput::placeholder {
