@@ -2,7 +2,7 @@ import styles from './Header.module.css'
 export function Header() {
   return (
     <header className={styles.header}>
-      <h1>My Next.js Project</h1>
+      <h1>calendify</h1>
     </header>
   );
 }

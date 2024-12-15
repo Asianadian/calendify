@@ -1,7 +1,9 @@
 .calendar {
-  flex: 2;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #eaeaea;
+  width: 100%;
+  background-color: rgb(156, 156, 156);
 }

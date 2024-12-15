@@ -5,11 +5,9 @@ import { Calendar } from "../pages/components/Calendar/Calendar";
 export default function Home() {
   return (
     <div className="container">
-      <Header />
       <div className="content">
         <ChatBox />
         <Calendar />
-        <a href="/api/python">rastarsta</a>
       </div>
     </div>
   );

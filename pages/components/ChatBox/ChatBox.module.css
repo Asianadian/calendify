@@ -3,30 +3,33 @@
   display: flex;
   flex-direction: column;
   color: #eaeaea;
-  margin: 50px;
-  border: 2px solid #444;
-  border-radius: 5px;
+  height: 100%;
+  background-color: #1a1a1a;
+  max-width: 360px;
 }
 
 .chatContent {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   padding: 1rem;
-  background-color: #1e1e1e;
+  width: 100%;
+  height:max-content;
+  max-width: 300px;
   color: #eaeaea;
-  font-size: 20px;
-  max-height: calc(100vh - 290px);
+  margin-left: 15px;
 }
 
 .chatInput {
-  border: none;
-  border-top: 2px solid #444;
-  padding: 0.5rem;
+  border: 0px none;
+  padding: 1rem;
   width: 100%;
-  box-sizing: border-box;
+  max-width: 300px;
   background-color: #2a2a2a;
   color: #eaeaea;
   font-size: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
 }
 
 .chatInput:focus {
