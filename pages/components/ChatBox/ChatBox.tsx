@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import { Message } from "./Message/Message";
+import { Header } from "./Header/Header";
 
 import styles from './ChatBox.module.css'
 export function ChatBox() {
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [events, setEvents] = useState<any[]>([]);
+
+  const refreshCalendar = () => {
+    const d: any = document
+    d.getElementById("calendar").src = d.getElementById("calendar").src;
+  }
 
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter" && input.trim() !== "") {
@@ -26,12 +32,14 @@ export function ChatBox() {
 
         if (response.ok) {
           const data: any[] = await response.json();
-
+          console.log(data)
           data.forEach(event => {
             setEvents([...events, event])
           });
+
+          refreshCalendar();
         } else {
-          console.log("no res")
+          console.log("No response")
         }
       } 
       catch (error) {
@@ -42,6 +50,7 @@ export function ChatBox() {
 
   return (
     <div className={styles.chatBox}>
+      <Header />
       <div className={styles.chatContent}>
         {messages.map((msg, index) => (
           <Message key={index} text={msg} />
@@ -49,7 +58,7 @@ export function ChatBox() {
       </div>
       <input
         type="text"
-        placeholder="Type a message..."
+        placeholder="Message Calendify"
         className={styles.chatInput}
         value={input}
         onChange={(e) => setInput(e.target.value)}

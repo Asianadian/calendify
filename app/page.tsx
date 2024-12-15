@@ -1,4 +1,3 @@
-import { Header } from "../pages/components/Header/Header";
 import { ChatBox } from "../pages/components/ChatBox/ChatBox";
 import { Calendar } from "../pages/components/Calendar/Calendar";
 
