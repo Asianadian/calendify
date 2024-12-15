@@ -26,8 +26,8 @@ class LLM:
     response = openai.chat.completions.create(
       model="gpt-3.5-turbo",
       messages=[
-        {"role": "system", "content": f"You are an assistant that generates ICS formatted calendar events. You only respond with the ICS output. {datetime_information()}"},
-        {"role": "user", "content": f"Generate an ICS event for this request: {prompt}"}
+        {"role": "system", "content": f"You are an assistant that returns calendar event IDs that match a description. You only respond with the IDs in a list in JSON. {datetime_information()}"},
+        {"role": "user", "content": f"The events are as follows:{prompt} \nGenerate an ICS event for this request: {prompt}"}
       ]
     )
     ics_data = response.choices[0].message.content

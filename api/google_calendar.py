@@ -7,6 +7,17 @@ import os
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.events", "https://www.googleapis.com/auth/calendar"]
 
+def shorten_event(event):
+  shortened_event = {
+        'id': event['id'],
+        'summary': event['summary'],
+        'description': event['description'] if 'description' in event else '',
+        'start': event['start'],
+        'end': event['end']
+  }
+
+  return shortened_event
+
 class GoogleCalendar:
   def __init__(self):
     self.creds = None
@@ -37,13 +48,8 @@ class GoogleCalendar:
 
       print(f"Event created: {created_event['summary']}")
 
-      shortened_event = {
-        'id': created_event['id'],
-        'summary': created_event['summary'],
-        'description': created_event['description'] if 'description' in created_event else '',
-        'start': created_event['start'],
-        'end': created_event['end']
-      }
+      shortened_event = shortened_event(created_event)
+
       return shortened_event
     
     except Exception as e:
@@ -74,3 +80,26 @@ class GoogleCalendar:
     except Exception as e:
       print(f"Exception occured while parsing events: {e}")
     
+  def get_events(self):
+    try:
+      events = []
+
+      page_token = None
+      while True:
+        page_events = self.service.events().list(
+          calendarId=self.calendar_id,
+          pageToken=page_token
+        ).execute()
+
+        for event in page_events['items']:
+          shortened_event = shorten_event(event)
+          events.append(shortened_event)
+
+        page_token = events.get('nextPageToken')
+        if not page_token:
+          break
+
+      return events
+    
+    except Exception as e:
+      print(f"Exception occured while creating event: {e}")
