@@ -1,7 +1,6 @@
 from langchain_community.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
 from langchain.tools import Tool
-from langchain.agents import initialize_agent, AgentExecutor
+from langchain.agents import initialize_agent
 from llm import LLM
 from google_calendar import GoogleCalendar
 import os
